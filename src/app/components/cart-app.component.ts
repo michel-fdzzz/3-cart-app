@@ -24,10 +24,29 @@ export class CartAppComponent implements OnInit {
   }
 
   onAddToCart(product: Product) {
-    // Se copia items para que la lista original no se vea afectada y ya cogemos 
-    // esa copia y le añadimos un objeto product que tiene la info del producto 
-    // copiada y la cantidad
-    this.items = [... this.items, { product: { ...product }, quantity: 1 }];
+    const hasItem = this.items.find(item => item.product.id === product.id);
+
+    if (hasItem) {
+      /* 1
+      hasItem.quantity++;
+      */
+      // 2
+      this.items = this.items.map(item => {
+        if (item.product.id === product.id) {
+          //item.quantity++; tambien funciona pero modifica el array original
+          return { ...item, quantity: item.quantity + 1 };
+        }
+        return item;
+      });
+    } else {
+      this.items = [... this.items, { product: { ...product }, quantity: 1 }];
+    }
+    /* 
+    Se copia items para que la lista original no se vea afectada y ya cogemos 
+     esa copia y le añadimos un objeto product que tiene la info del producto 
+     copiada y la cantidad
+     */
+
 
     /*
     Con ... queda así, como un solo array normal: 
