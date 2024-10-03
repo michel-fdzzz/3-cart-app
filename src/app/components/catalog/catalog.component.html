@@ -2,7 +2,7 @@
     @for(product of products; track $index) {
     <!-- Entre "" se pone el product del for -->
     <div class="col-4 my-2">
-        <product-card [product]="product"></product-card>
+        <product-card [product]="product" class="col-4 my-2" (productEventEmitter)=" onAddToCart($event)" />
         <!-- Se puede poner así poniendo en el selector de product-card esto -- div[product-card]:
          <div product-card [product]="product" class="col-4 my-2"></div>
          -->

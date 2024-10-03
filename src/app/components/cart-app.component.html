@@ -1,10 +1,11 @@
 <h2>Catalogo de productos App</h2>
 
-<catalog [products]="products"></catalog>
+<catalog [products]="products" (productEventEmitter)="onAddToCart($event)"></catalog>
 
 @if(items.length > 0) {
 <!-- [items] es del cart y lo igualamos a los items de la app items-->
 <cart [items]="items" />
+
 } @else {
 <p class="alert alert-warning">No tienes productos en tu carrito</p>
 }
