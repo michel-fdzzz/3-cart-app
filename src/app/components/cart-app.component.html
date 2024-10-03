@@ -1,12 +1,17 @@
 <h2>Carro de compras</h2>
 
-<div>
+<div class="row">
     @for(product of products; track $index) {
-    <div>
-        <h5>{{product.name}}</h5>
-        <p>{{product.description}}</p>
-        <p>Precio: {{product.price}}</p>
-        <button>Agregar al carro</button>
+
+    <div class="col-4 my-2">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">{{product.name}}</h5>
+                <p class="card-text">{{product.description}}</p>
+                <p class="card-text">Precio: {{product.price}}</p>
+                <button class="btn btn-primary">Agregar al carro</button>
+            </div>
+        </div>
     </div>
     }
 </div>
