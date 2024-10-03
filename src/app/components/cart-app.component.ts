@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ProductService } from '../services/product.service';
 import { Product } from '../models/product';
 import { CatalogComponent } from './catalog/catalog.component';
@@ -12,6 +12,7 @@ import { CartItem } from '../models/cartitem';
   templateUrl: './cart-app.component.html'
 })
 export class CartAppComponent implements OnInit {
+
 
   products: Product[] = [];
 
@@ -63,5 +64,11 @@ export class CartAppComponent implements OnInit {
       { product: { name: 'Tablet', price: 300 }, quantity: 1 }
     ];
     */
+  }
+
+
+  onDeleteCart(id: number): void {
+    //Si es distinto no pasa, se elimina entonces 
+    this.items = this.items.filter(item => item.product.id !== id);
   }
 }
