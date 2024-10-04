@@ -2,23 +2,31 @@
 
 <div class="container my-4">
     <h2>Catalogo de productos App</h2>
-    <div class="row">
-        <div [className]="showCart ? 'col-9' : 'col'">
-            <catalog [products]="products" (productEventEmitter)="onAddToCart($event)"></catalog>
-        </div>
-        @if (showCart){
-        <div class="col-3">
-            <button class="btn btn-sm btn-secondary float-end" (click)="openCart()">X</button>
+    <catalog [products]="products" (productEventEmitter)="onAddToCart($event)"></catalog>
 
-            @if(items.length > 0) {
-            <!-- [items] es del cart y lo igualamos a los items de la app items-->
-            <cart [items]="items" (idProductEventEmitter)="onDeleteCart($event)" [total]="total" />
+    @if (showCart){
+    <div class="abrir-modal animacion faceIn">
+        <div class="modal" style="display: block;" tabindex="-1">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Carro de compra</h5>
+                    </div>
 
-            } @else {
-            <p class="alert alert-warning">No tienes productos en tu carrito</p>
-            }
+                    <div class="modal-body">
+
+                        @if(items.length > 0) {
+                        <!-- [items] es del cart y lo igualamos a los items de la app items-->
+                        <cart [items]="items" (idProductEventEmitter)="onDeleteCart($event)" [total]="total" />
+                        } @else {
+                        <div class="alert alert-warning">No tienes productos en tu carrito</div>
+                        }
+                        <button class="btn btn-sm btn-secondary float-end" (click)="openCart()">X</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        }
     </div>
 
+    }
 </div>
