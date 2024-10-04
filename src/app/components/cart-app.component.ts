@@ -19,6 +19,8 @@ export class CartAppComponent implements OnInit {
 
   total: number = 0;
 
+  showCart: boolean = false;
+
   constructor(private service: ProductService) { }
 
   ngOnInit(): void {
@@ -86,5 +88,10 @@ export class CartAppComponent implements OnInit {
   saveSession(): void {
     //Se tiene que guardar lo   que sea como string
     sessionStorage.setItem('cart', JSON.stringify(this.items));
+  }
+
+  openCart(): void {
+    //Lo cambia a su valor contrario
+    this.showCart = !this.showCart;
   }
 }
