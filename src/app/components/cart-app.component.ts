@@ -23,6 +23,7 @@ export class CartAppComponent implements OnInit {
 
   ngOnInit(): void {
     this.products = this.service.findAll();
+    this.items = JSON.parse(sessionStorage.getItem('cart')!) || []; //Carga el items de la sesion
     this.calculateTotal(); //Calcula el total al inicio de la aplicacion
   }
 
@@ -33,6 +34,7 @@ export class CartAppComponent implements OnInit {
       /* 1
       hasItem.quantity++;
       */
+
       // 2
       this.items = this.items.map(item => {
         if (item.product.id === product.id) {
@@ -45,6 +47,7 @@ export class CartAppComponent implements OnInit {
       this.items = [... this.items, { product: { ...product }, quantity: 1 }];
     }
     this.calculateTotal();//Para que se calcule el total despues de que se añada algun producto
+    this.saveSession();
     /* 
     Se copia items para que la lista original no se vea afectada y ya cogemos 
      esa copia y le añadimos un objeto product que tiene la info del producto 
@@ -73,9 +76,15 @@ export class CartAppComponent implements OnInit {
     //Si es distinto no pasa, se elimina entonces 
     this.items = this.items.filter(item => item.product.id !== id);
     this.calculateTotal(); //Para que se calcule el total despues de que se elimine algun producto
+    this.saveSession();
   }
 
   calculateTotal(): void {
     this.total = this.items.reduce((accumulator, item) => accumulator + item.quantity * item.product.price, 0); //0 es el valor inicial del accumulator
+  }
+
+  saveSession(): void {
+    //Se tiene que guardar lo   que sea como string
+    sessionStorage.setItem('cart', JSON.stringify(this.items));
   }
 }
