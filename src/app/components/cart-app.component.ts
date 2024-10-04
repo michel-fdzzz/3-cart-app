@@ -2,14 +2,14 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ProductService } from '../services/product.service';
 import { Product } from '../models/product';
 import { CatalogComponent } from './catalog/catalog.component';
-import { CartComponent } from './cart/cart.component';
 import { CartItem } from '../models/cartitem';
 import { NavbarComponent } from './navbar/navbar.component';
+import { CardModalComponent } from './card-modal/card-modal.component';
 
 @Component({
   selector: 'cart-app',
   standalone: true,
-  imports: [CatalogComponent, CartComponent, NavbarComponent],
+  imports: [CatalogComponent, CardModalComponent, NavbarComponent],
   templateUrl: './cart-app.component.html'
 })
 export class CartAppComponent implements OnInit {
@@ -91,7 +91,7 @@ export class CartAppComponent implements OnInit {
     sessionStorage.setItem('cart', JSON.stringify(this.items));
   }
 
-  openCart(): void {
+  openCloseCart(): void {
     //Lo cambia a su valor contrario
     this.showCart = !this.showCart;
   }

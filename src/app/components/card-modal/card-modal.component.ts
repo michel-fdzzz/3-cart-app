@@ -1,20 +1,27 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { CartComponent } from '../cart/cart.component';
 import { CartItem } from '../../models/cartitem';
 
 @Component({
-  selector: 'cart',
+  selector: 'card-modal',
   standalone: true,
-  imports: [],
-  templateUrl: './cart.component.html'
+  imports: [CartComponent],
+  templateUrl: './card-modal.component.html'
 })
-export class CartComponent {
+export class CardModalComponent {
   @Input() items: CartItem[] = [];
   @Input() total = 0;
 
+
   @Output() idProductEventEmitter = new EventEmitter();
+  @Output() closeEventEmitter = new EventEmitter();
+
 
   onDeleteCart(id: number) {
     this.idProductEventEmitter.emit(id);
   }
 
+  closeCart(): void {
+    this.closeEventEmitter.emit();
+  }
 }
