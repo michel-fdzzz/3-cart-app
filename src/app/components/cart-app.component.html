@@ -1,20 +1,24 @@
-<h2>Catalogo de productos App</h2>
-<button class="btn btn-sm btn-info" (click)="openCart()">Show cart ({{items.length}})</button>
-<div class="row">
-    <div [className]="showCart ? 'col-9' : 'col'">
-        <catalog [products]="products" (productEventEmitter)="onAddToCart($event)"></catalog>
-    </div>
-    @if (showCart){
-    <div class="col-3">
-        <button class="btn btn-sm btn-secondary float-end" (click)="openCart()">X</button>
+<navbar [items]="items" (openEventEmitter)="openCart()" />
 
-        @if(items.length > 0) {
-        <!-- [items] es del cart y lo igualamos a los items de la app items-->
-        <cart [items]="items" (idProductEventEmitter)="onDeleteCart($event)" [total]="total" />
+<div class="container my-4">
+    <h2>Catalogo de productos App</h2>
+    <div class="row">
+        <div [className]="showCart ? 'col-9' : 'col'">
+            <catalog [products]="products" (productEventEmitter)="onAddToCart($event)"></catalog>
+        </div>
+        @if (showCart){
+        <div class="col-3">
+            <button class="btn btn-sm btn-secondary float-end" (click)="openCart()">X</button>
 
-        } @else {
-        <p class="alert alert-warning">No tienes productos en tu carrito</p>
+            @if(items.length > 0) {
+            <!-- [items] es del cart y lo igualamos a los items de la app items-->
+            <cart [items]="items" (idProductEventEmitter)="onDeleteCart($event)" [total]="total" />
+
+            } @else {
+            <p class="alert alert-warning">No tienes productos en tu carrito</p>
+            }
+        </div>
         }
     </div>
-    }
+
 </div>
