@@ -10,7 +10,7 @@ import { CartItem } from '../../models/cartitem';
 })
 export class CardModalComponent {
   @Input() items: CartItem[] = [];
-  @Input() total = 0;
+  //@Input() total = 0;
 
 
   @Output() idProductEventEmitter = new EventEmitter();

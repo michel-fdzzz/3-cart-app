@@ -11,7 +11,7 @@
                 <div class="modal-body">
                     @if(items.length > 0) {
                     <!-- [items] es del cart y lo igualamos a los items de la app items-->
-                    <cart [items]="items" [total]="total" (idProductEventEmitter)="onDeleteCart($event)" />
+                    <cart [items]="items" (idProductEventEmitter)="onDeleteCart($event)" />
                     } @else {
                     <div class="alert alert-warning">No tienes productos en tu carrito</div>
                     }
@@ -24,3 +24,4 @@
         </div>
     </div>
 </div>
+<!--[total]="total"-->
