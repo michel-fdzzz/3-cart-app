@@ -4,7 +4,7 @@
 
 @if(items.length > 0) {
 <!-- [items] es del cart y lo igualamos a los items de la app items-->
-<cart [items]="items" (idProductEventEmitter)="onDeleteCart($event)"></cart>
+<cart [items]="items" (idProductEventEmitter)="onDeleteCart($event)" [total]="total" />
 
 } @else {
 <p class="alert alert-warning">No tienes productos en tu carrito</p>
