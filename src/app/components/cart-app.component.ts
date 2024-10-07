@@ -4,12 +4,11 @@ import { Product } from '../models/product';
 import { CatalogComponent } from './catalog/catalog.component';
 import { CartItem } from '../models/cartitem';
 import { NavbarComponent } from './navbar/navbar.component';
-import { CardModalComponent } from './card-modal/card-modal.component';
-
+import { RouterOutlet } from '@angular/router';
 @Component({
   selector: 'cart-app',
   standalone: true,
-  imports: [CatalogComponent, CardModalComponent, NavbarComponent],
+  imports: [CatalogComponent, NavbarComponent, RouterOutlet],
   templateUrl: './cart-app.component.html'
 })
 export class CartAppComponent implements OnInit {
@@ -18,16 +17,14 @@ export class CartAppComponent implements OnInit {
 
   items: CartItem[] = [];
 
-  //total: number = 0;
-
-  showCart: boolean = false;
+  total: number = 0;
 
   constructor(private service: ProductService) { }
 
   ngOnInit(): void {
     this.products = this.service.findAll();
     this.items = JSON.parse(sessionStorage.getItem('cart') || '[]') || []; //Carga el items de la sesion
-    //this.calculateTotal(); //Calcula el total al inicio de la aplicacion
+    this.calculateTotal(); //Calcula el total al inicio de la aplicacion
   }
 
   onAddToCart(product: Product) {
@@ -52,9 +49,7 @@ export class CartAppComponent implements OnInit {
     //Lo mantenmos aqui ya que si la modal no se abre, no se guardan en la sesion las cosas con el onChange
     //así cada vez que se añada algo al carrito ya se guarda en sesion
     this.saveSession();
-
-
-    //this.calculateTotal();//Para que se calcule el total despues de que se añada algun producto
+    this.calculateTotal();//Para que se calcule el total despues de que se añada algun producto
     //this.saveSession();
     /* 
     Se copia items para que la lista original no se vea afectada y ya cogemos 
@@ -89,22 +84,12 @@ export class CartAppComponent implements OnInit {
     //pero si es 0 borramos el carrito y ya
     if (this.items.length === 0) sessionStorage.removeItem('cart');
 
-    //this.calculateTotal(); //Para que se calcule el total despues de que se elimine algun producto
-    //this.saveSession();
+    this.calculateTotal(); //Para que se calcule el total despues de que se elimine algun producto
+    this.saveSession();
   }
-  /*
-    calculateTotal(): void {
-      this.total = this.items.reduce((accumulator, item) => accumulator + item.quantity * item.product.price, 0); //0 es el valor inicial del accumulator
-    }
-  
-    saveSession(): void {
-      //Se tiene que guardar lo   que sea como string
-      sessionStorage.setItem('cart', JSON.stringify(this.items));
-    }
-  */
-  openCloseCart(): void {
-    //Lo cambia a su valor contrario
-    this.showCart = !this.showCart;
+
+  calculateTotal(): void {
+    this.total = this.items.reduce((accumulator, item) => accumulator + item.quantity * item.product.price, 0); //0 es el valor inicial del accumulator
   }
 
   saveSession(): void {
