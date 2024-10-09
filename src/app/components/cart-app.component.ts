@@ -28,54 +28,57 @@ export class CartAppComponent implements OnInit {
     this.calculateTotal(); //Calcula el total al inicio de la aplicacion
     //Para que se suscriba al inicio
     this.onDeleteCart();
+    this.onAddToCart();
   }
 
-  onAddToCart(product: Product) {
-    const hasItem = this.items.find(item => item.product.id === product.id);
+  onAddToCart(): void {
+    this.sharingDataService.productEventEmitter.subscribe(product => {
+      const hasItem = this.items.find(item => item.product.id === product.id);
 
-    if (hasItem) {
-      /* 1
-      hasItem.quantity++;
-      */
+      if (hasItem) {
+        /* 1
+        hasItem.quantity++;
+        */
 
-      // 2
-      this.items = this.items.map(item => {
-        if (item.product.id === product.id) {
-          //item.quantity++; tambien funciona pero modifica el array original
-          return { ...item, quantity: item.quantity + 1 };
-        }
-        return item;
-      });
-    } else {
-      this.items = [... this.items, { product: { ...product }, quantity: 1 }];
-    }
-    //Lo mantenmos aqui ya que si la modal no se abre, no se guardan en la sesion las cosas con el onChange
-    //así cada vez que se añada algo al carrito ya se guarda en sesion
-    this.saveSession();
-    this.calculateTotal();//Para que se calcule el total despues de que se añada algun producto
-    //this.saveSession();
-    /* 
-    Se copia items para que la lista original no se vea afectada y ya cogemos 
-     esa copia y le añadimos un objeto product que tiene la info del producto 
-     copiada y la cantidad
-     */
+        // 2
+        this.items = this.items.map(item => {
+          if (item.product.id === product.id) {
+            //item.quantity++; tambien funciona pero modifica el array original
+            return { ...item, quantity: item.quantity + 1 };
+          }
+          return item;
+        });
+      } else {
+        this.items = [... this.items, { product: { ...product }, quantity: 1 }];
+      }
+      //Lo mantenmos aqui ya que si la modal no se abre, no se guardan en la sesion las cosas con el onChange
+      //así cada vez que se añada algo al carrito ya se guarda en sesion
+      this.saveSession();
+      this.calculateTotal();//Para que se calcule el total despues de que se añada algun producto
+      //this.saveSession();
+      /* 
+      Se copia items para que la lista original no se vea afectada y ya cogemos 
+       esa copia y le añadimos un objeto product que tiene la info del producto 
+       copiada y la cantidad
+       */
 
 
-    /*
-    Con ... queda así, como un solo array normal: 
-    this.items = [
-      { product: { name: 'Laptop', price: 1000 }, quantity: 1 },
-      { product: { name: 'Phone', price: 500 }, quantity: 2 }
-    ];
-
-    SIN ... queda así como dos arrays diferentes dentro del mismo:
-    [ 
+      /*
+      Con ... queda así, como un solo array normal: 
+      this.items = [
         { product: { name: 'Laptop', price: 1000 }, quantity: 1 },
         { product: { name: 'Phone', price: 500 }, quantity: 2 }
-      ],
-      { product: { name: 'Tablet', price: 300 }, quantity: 1 }
-    ];
-    */
+      ];
+  
+      SIN ... queda así como dos arrays diferentes dentro del mismo:
+      [ 
+          { product: { name: 'Laptop', price: 1000 }, quantity: 1 },
+          { product: { name: 'Phone', price: 500 }, quantity: 2 }
+        ],
+        { product: { name: 'Tablet', price: 300 }, quantity: 1 }
+      ];
+      */
+    })
   }
 
   onDeleteCart(): void {

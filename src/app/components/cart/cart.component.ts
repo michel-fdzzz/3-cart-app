@@ -26,4 +26,9 @@ export class CartComponent {
     //Llamamos al metodo get de sharingDataService 
     this.sharingDataService.idProductEventEmitter.emit(id);
   }
+
+  onAddCart(id: number) {
+    //Llamamos al metodo get de sharingDataService 
+    this.sharingDataService.idProductEventEmitter.emit(id);
+  }
 }
