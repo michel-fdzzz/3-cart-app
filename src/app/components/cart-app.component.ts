@@ -5,6 +5,7 @@ import { CatalogComponent } from './catalog/catalog.component';
 import { CartItem } from '../models/cartitem';
 import { NavbarComponent } from './navbar/navbar.component';
 import { RouterOutlet } from '@angular/router';
+import { SharingDataService } from '../services/sharing-data.service';
 @Component({
   selector: 'cart-app',
   standalone: true,
@@ -19,12 +20,14 @@ export class CartAppComponent implements OnInit {
 
   total: number = 0;
 
-  constructor(private service: ProductService) { }
+  constructor(private sharingDataService: SharingDataService, private service: ProductService) { }
 
   ngOnInit(): void {
     this.products = this.service.findAll();
     this.items = JSON.parse(sessionStorage.getItem('cart') || '[]') || []; //Carga el items de la sesion
     this.calculateTotal(); //Calcula el total al inicio de la aplicacion
+    //Para que se suscriba al inicio
+    this.onDeleteCart();
   }
 
   onAddToCart(product: Product) {
@@ -75,17 +78,23 @@ export class CartAppComponent implements OnInit {
     */
   }
 
-  onDeleteCart(id: number): void {
-    //Si es distinto no pasa, se elimina entonces 
-    this.items = this.items.filter(item => item.product.id !== id);
+  onDeleteCart(): void {
+    //El emit lo emite y el subscribe suscribe los eventos del EventEmitter y puede 
+    //definir una funcion que se ejecutará cada vez que se emita un nuevo evento
+    this.sharingDataService.idProductEventEmitter.subscribe(id => {
+      console.log(id + ' se ha ejecutado el evento idProductEventEmitter')
+      //Si es distinto no pasa, se elimina entonces 
+      this.items = this.items.filter(item => item.product.id !== id);
 
-    //Toca hacer esto ya que si el filter deja el array vacio, no lo tiene en 
-    //cuenta como cambio ya que ya ha estado vacio y siempre se queda un ultimo elemento
-    //pero si es 0 borramos el carrito y ya
-    if (this.items.length === 0) sessionStorage.removeItem('cart');
+      //Toca hacer esto ya que si el filter deja el array vacio, no lo tiene en 
+      //cuenta como cambio ya que ya ha estado vacio y siempre se queda un ultimo elemento
+      //pero si es 0 borramos el carrito y ya
+      if (this.items.length === 0) sessionStorage.removeItem('cart');
 
-    this.calculateTotal(); //Para que se calcule el total despues de que se elimine algun producto
-    this.saveSession();
+      this.calculateTotal(); //Para que se calcule el total despues de que se elimine algun producto
+      this.saveSession();
+    });
+
   }
 
   calculateTotal(): void {
