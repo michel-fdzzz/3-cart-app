@@ -6,8 +6,8 @@
 
         <div class="card-body">
 
-            <table class="table table-h
-table-striped">
+            @if (items.length > 0){
+            <table class="table table-h table-striped">
                 <thead>
                     <tr>
                         <th>Prducto</th>
@@ -41,6 +41,9 @@ table-striped">
                     </tr>
                 </tfoot>
             </table>
+            } @else {
+            <div class="alert alert-warning">El carro está vacío</div>
+            }
         </div>
     </div>
 </div>

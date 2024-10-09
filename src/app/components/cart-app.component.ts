@@ -4,8 +4,9 @@ import { Product } from '../models/product';
 import { CatalogComponent } from './catalog/catalog.component';
 import { CartItem } from '../models/cartitem';
 import { NavbarComponent } from './navbar/navbar.component';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { SharingDataService } from '../services/sharing-data.service';
+import { state } from '@angular/animations';
 @Component({
   selector: 'cart-app',
   standalone: true,
@@ -20,7 +21,10 @@ export class CartAppComponent implements OnInit {
 
   total: number = 0;
 
-  constructor(private sharingDataService: SharingDataService, private service: ProductService) { }
+  constructor(
+    private router: Router,
+    private sharingDataService: SharingDataService,
+    private service: ProductService) { }
 
   ngOnInit(): void {
     this.products = this.service.findAll();
@@ -56,6 +60,9 @@ export class CartAppComponent implements OnInit {
       this.saveSession();
       this.calculateTotal();//Para que se calcule el total despues de que se añada algun producto
       //this.saveSession();
+      this.router.navigate(['/cart'], {
+        state: { items: this.items, total: this.total }
+      });
       /* 
       Se copia items para que la lista original no se vea afectada y ya cogemos 
        esa copia y le añadimos un objeto product que tiene la info del producto 
@@ -96,6 +103,15 @@ export class CartAppComponent implements OnInit {
 
       this.calculateTotal(); //Para que se calcule el total despues de que se elimine algun producto
       this.saveSession();
+
+
+      //Necesario para refrescar el componente
+      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+        this.router.navigate(['/cart'], {
+          state: { items: this.items, total: this.total }
+        });
+      });
+
     });
 
   }
