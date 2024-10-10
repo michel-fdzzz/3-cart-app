@@ -1,12 +1,14 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ProductService } from '../services/product.service';
-import { Product } from '../models/product';
+//import { Product } from '../models/product';
 import { CatalogComponent } from './catalog/catalog.component';
 import { CartItem } from '../models/cartitem';
 import { NavbarComponent } from './navbar/navbar.component';
 import { Router, RouterOutlet } from '@angular/router';
 import { SharingDataService } from '../services/sharing-data.service';
-import { state } from '@angular/animations';
+import Swal from 'sweetalert2';
+
+
 @Component({
   selector: 'cart-app',
   standalone: true,
@@ -15,7 +17,7 @@ import { state } from '@angular/animations';
 })
 export class CartAppComponent implements OnInit {
 
-  products: Product[] = [];
+  //products: Product[] = [];
 
   items: CartItem[] = [];
 
@@ -27,10 +29,11 @@ export class CartAppComponent implements OnInit {
     private service: ProductService) { }
 
   ngOnInit(): void {
-    this.products = this.service.findAll();
+
     this.items = JSON.parse(sessionStorage.getItem('cart') || '[]') || []; //Carga el items de la sesion
     this.calculateTotal(); //Calcula el total al inicio de la aplicacion
-    //Para que se suscriba al inicio
+
+    //Para que se suscriba al inicio ya que tienen la funcion subscribe
     this.onDeleteCart();
     this.onAddToCart();
   }
@@ -85,6 +88,12 @@ export class CartAppComponent implements OnInit {
         { product: { name: 'Tablet', price: 300 }, quantity: 1 }
       ];
       */
+
+      Swal.fire({
+        title: "Shopping Cart",
+        text: "Nuevo producto agregado",
+        icon: "success"
+      });
     })
   }
 
@@ -93,24 +102,48 @@ export class CartAppComponent implements OnInit {
     //definir una funcion que se ejecutará cada vez que se emita un nuevo evento
     this.sharingDataService.idProductEventEmitter.subscribe(id => {
       console.log(id + ' se ha ejecutado el evento idProductEventEmitter')
-      //Si es distinto no pasa, se elimina entonces 
-      this.items = this.items.filter(item => item.product.id !== id);
 
-      //Toca hacer esto ya que si el filter deja el array vacio, no lo tiene en 
-      //cuenta como cambio ya que ya ha estado vacio y siempre se queda un ultimo elemento
-      //pero si es 0 borramos el carrito y ya
-      if (this.items.length === 0) sessionStorage.removeItem('cart');
+      Swal.fire({
+        title: "Seguro de que quiere eliminar el producto?",
+        text: "Este cambio es irreversible!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Si, eliminar!"
+      }).then((result) => {
+        if (result.isConfirmed) {
 
-      this.calculateTotal(); //Para que se calcule el total despues de que se elimine algun producto
-      this.saveSession();
+
+          //Si es distinto no pasa, se elimina entonces 
+          this.items = this.items.filter(item => item.product.id !== id);
+
+          //Toca hacer esto ya que si el filter deja el array vacio, no lo tiene en 
+          //cuenta como cambio ya que ya ha estado vacio y siempre se queda un ultimo elemento
+          //pero si es 0 borramos el carrito y ya
+          if (this.items.length === 0) sessionStorage.removeItem('cart');
+
+          this.calculateTotal(); //Para que se calcule el total despues de que se elimine algun producto
+          this.saveSession();
 
 
-      //Necesario para refrescar el componente
-      this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-        this.router.navigate(['/cart'], {
-          state: { items: this.items, total: this.total }
-        });
+          //Necesario para refrescar el componente
+          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate(['/cart'], {
+              state: { items: this.items, total: this.total }
+            });
+          });
+
+
+          Swal.fire({
+            title: "Eliminado!",
+            text: "Se ha eliminado el producto.",
+            icon: "success"
+          });
+        }
       });
+
+
 
     });
 
