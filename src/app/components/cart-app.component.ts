@@ -7,6 +7,9 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { Router, RouterOutlet } from '@angular/router';
 import { SharingDataService } from '../services/sharing-data.service';
 import Swal from 'sweetalert2';
+import { ItemsState } from '../store/items.reducer';
+import { Store } from '@ngrx/store';
+import { add, remove, total } from '../store/items.action';
 
 
 @Component({
@@ -24,22 +27,27 @@ export class CartAppComponent implements OnInit {
   total: number = 0;
 
   constructor(
+    private store: Store<{ items: ItemsState }>,
     private router: Router,
-    private sharingDataService: SharingDataService,
-    private service: ProductService) { }
+    private sharingDataService: SharingDataService) {
+    this.store.select('items').subscribe(state => {
+      this.items = state.items;
+      this.total = state.total;
+    })
+  }
 
   ngOnInit(): void {
-
-    this.items = JSON.parse(sessionStorage.getItem('cart') || '[]') || []; //Carga el items de la sesion
-    //this.calculateTotal(); //Calcula el total al inicio de la aplicacion
-
-    //Para que se suscriba al inicio ya que tienen la funcion subscribe
+    this.store.dispatch(total());
     this.onDeleteCart();
     this.onAddToCart();
   }
 
   onAddToCart(): void {
     this.sharingDataService.productEventEmitter.subscribe(product => {
+
+      this.store.dispatch(add({ product: product }));
+      this.store.dispatch(total())
+
 
       //Lo mantenmos aqui ya que si la modal no se abre, no se guardan en la sesion las cosas con el onChange
       //así cada vez que se añada algo al carrito ya se guarda en sesion
@@ -90,8 +98,10 @@ export class CartAppComponent implements OnInit {
       }).then((result) => {
         if (result.isConfirmed) {
 
-          // this.calculateTotal(); //Para que se calcule el total despues de que se elimine algun producto
+          this.store.dispatch(remove({ id }));
+          this.store.dispatch(total());
           this.saveSession();
+          // this.calculateTotal(); //Para que se calcule el total despues de que se elimine algun producto
 
 
           //Necesario para refrescar el componente
