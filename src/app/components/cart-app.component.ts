@@ -33,11 +33,13 @@ export class CartAppComponent implements OnInit {
     this.store.select('items').subscribe(state => {
       this.items = state.items;
       this.total = state.total;
+      this.saveSession();
+      console.log('cambio el estado')
     })
   }
 
   ngOnInit(): void {
-    this.store.dispatch(total());
+    //this.store.dispatch(total());
     this.onDeleteCart();
     this.onAddToCart();
   }
@@ -48,10 +50,6 @@ export class CartAppComponent implements OnInit {
       this.store.dispatch(add({ product: product }));
       this.store.dispatch(total())
 
-
-      //Lo mantenmos aqui ya que si la modal no se abre, no se guardan en la sesion las cosas con el onChange
-      //así cada vez que se añada algo al carrito ya se guarda en sesion
-      this.saveSession();
       //this.calculateTotal();//Para que se calcule el total despues de que se añada algun producto
       //this.saveSession();
 
@@ -100,7 +98,6 @@ export class CartAppComponent implements OnInit {
 
           this.store.dispatch(remove({ id }));
           this.store.dispatch(total());
-          this.saveSession();
           // this.calculateTotal(); //Para que se calcule el total despues de que se elimine algun producto
 
 
@@ -125,7 +122,6 @@ export class CartAppComponent implements OnInit {
     });
 
   }
-
 
   saveSession(): void {
     //Se tiene que guardar lo   que sea como string
