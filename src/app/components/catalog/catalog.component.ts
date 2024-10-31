@@ -22,7 +22,7 @@ export class CatalogComponent implements OnInit {
     private sharingDataService: SharingDataService) { }
 
   ngOnInit(): void {
-    if (!this.products) this.products = this.productService.findAll();
+    this.products = this.productService.findAll();
   }
 
   onAddToCart(product: Product) {

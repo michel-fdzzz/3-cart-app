@@ -5,9 +5,11 @@ import { routes } from './app.routes';
 import { provideStore } from '@ngrx/store';
 import { itemsReducer } from './store/items.reducer';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { ProductsReducer } from './store/products.reducer';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }), provideRouter(routes), provideStore({
-        items: itemsReducer
-    }), provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]
+    items: itemsReducer,
+    products: ProductsReducer
+  }), provideStoreDevtools({ maxAge: 25, logOnly: !isDevMode() })]
 };
