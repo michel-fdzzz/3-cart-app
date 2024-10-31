@@ -10,6 +10,6 @@ const initialState = {
 export const ProductsReducer = createReducer(
     initialState,
     //Del payload pasamos los productos por eso ponemos { products }
-    on(load, (state, { products }) => ({ products: { ...products } })),
+    on(load, (state, { products }) => ({ products: [...products] })),
 
 )

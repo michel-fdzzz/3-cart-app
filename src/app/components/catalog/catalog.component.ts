@@ -4,6 +4,8 @@ import { ProductCardComponent } from '../product-card/product-card.component';
 import { Router } from '@angular/router';
 import { SharingDataService } from '../../services/sharing-data.service';
 import { ProductService } from '../../services/product.service';
+import { Store } from '@ngrx/store';
+import { load } from '../../store/products.actions';
 
 @Component({
   selector: 'catalog',
@@ -18,11 +20,15 @@ export class CatalogComponent implements OnInit {
   productEventEmitter: EventEmitter<Product> = new EventEmitter();
 
   constructor(
+    private store: Store<{ products: any }>,
     private productService: ProductService,
-    private sharingDataService: SharingDataService) { }
+    private sharingDataService: SharingDataService) {
+    this.store.select('products').subscribe(state => { this.products = state.products; });
+  }
 
   ngOnInit(): void {
-    this.products = this.productService.findAll();
+    //Esta opcion se va despachar al store y en el store va a buscar que reducer cntiene alguna accion llamada load (en app.config.ts lo mira)
+    this.store.dispatch(load({ products: this.productService.findAll() }));
   }
 
   onAddToCart(product: Product) {
