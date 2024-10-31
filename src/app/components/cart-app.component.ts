@@ -32,7 +32,6 @@ export class CartAppComponent implements OnInit {
     private sharingDataService: SharingDataService) {
     this.store.select('items').subscribe(state => {
       this.items = state.items;
-      this.total = state.total;
       this.saveSession();
       console.log('cambio el estado')
     })
@@ -48,14 +47,12 @@ export class CartAppComponent implements OnInit {
     this.sharingDataService.productEventEmitter.subscribe(product => {
 
       this.store.dispatch(add({ product: product }));
-      this.store.dispatch(total())
+      this.store.dispatch(total());
 
       //this.calculateTotal();//Para que se calcule el total despues de que se añada algun producto
       //this.saveSession();
 
-      this.router.navigate(['/cart'], {
-        state: { items: this.items, total: this.total }
-      });
+      this.router.navigate(['/cart']);
       /*
       Con ... queda así, como un solo array normal: 
       this.items = [
@@ -100,14 +97,7 @@ export class CartAppComponent implements OnInit {
           this.store.dispatch(total());
           // this.calculateTotal(); //Para que se calcule el total despues de que se elimine algun producto
 
-
-          //Necesario para refrescar el componente
-          this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-            this.router.navigate(['/cart'], {
-              state: { items: this.items, total: this.total }
-            });
-          });
-
+          this.router.navigate(['/cart']);
 
           Swal.fire({
             title: "Eliminado!",
